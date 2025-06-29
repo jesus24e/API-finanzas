@@ -1,42 +1,18 @@
 import express from 'express'
+import transactionController from '../controllers/transactionController.js';
 
 const router = express.Router();
 
-router.get("/", (req, res)=>{
-    res.json({
-        msg:"all transactions"
-    })
-})
-router.post("/", (req, res)=>{
-    res.json({
-        msg:"add transactions"
-    })
-})
+router.get("/", transactionController.readAll)
+
+router.post("/", transactionController.create)
 
 
 router.route("/:id")
-    .put((req, res)=>{
-        const id = req.params.id;
+    .put(transactionController.update)
 
-        res.json({
-            msg:`update transaction ${id}`
-        })
-    })
+    .delete(transactionController.delete)
 
-    .delete((req, res)=>{
-        const id = req.params.id;
-
-        res.json({
-            msg:`delete transaction ${id}`
-        })
-    })
-
-    .get((req,res)=>{
-        const id=req.params.id;
-
-        res.json({
-            msg:`get transaction ${id}`
-        })
-    })
+    .get(transactionController.read);
 
 export default router;

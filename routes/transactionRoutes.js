@@ -12,15 +12,31 @@ router.post("/", (req, res)=>{
         msg:"add transactions"
     })
 })
-router.put("/", (req, res)=>{
-    res.json({
-        msg:"update transactions"
+
+
+router.route("/:id")
+    .put((req, res)=>{
+        const id = req.params.id;
+
+        res.json({
+            msg:`update transaction ${id}`
+        })
     })
-})
-router.delete("/", (req, res)=>{
-    res.json({
-        msg:"delete transactions"
+
+    .delete((req, res)=>{
+        const id = req.params.id;
+
+        res.json({
+            msg:`delete transaction ${id}`
+        })
     })
-})
+
+    .get((req,res)=>{
+        const id=req.params.id;
+
+        res.json({
+            msg:`get transaction ${id}`
+        })
+    })
 
 export default router;

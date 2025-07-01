@@ -1,3 +1,5 @@
+import db from "../databases/conexion.js"
+
 class TransactionController{
     constructor(){
 

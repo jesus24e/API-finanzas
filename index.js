@@ -4,6 +4,8 @@ import transactionRoutes from './routes/transactionRoutes.js'
 
 const app = express()
 
+app.use(express.json())
+
 app.get('/',(req,res)=>{
     res.send('hola mundo')
 });

@@ -1,12 +1,22 @@
-import db from "../databases/conexion.js"
+import { json } from "express";
+import transactionRepository from "../repositories/transactionRepository.js"
 
 class TransactionController{
     constructor(){
 
     }
 
-    create(req,res){
-        res.json({msg:"add transactions"})
+    async create(req,res){
+        try {
+            const data = await transactionRepository.create(req.body);
+
+            res.status(200).json(data);
+            console.log("mesaje recibido: " + JSON.stringify(data))
+        } catch (error) {
+            res.status(500).send(error);
+            console.log(error)
+        }
+        
     }
 
     readAll(req,res){

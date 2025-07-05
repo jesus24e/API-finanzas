@@ -1,37 +1,32 @@
-import { ObjectId } from "mongodb";
-import dbClient from "../databases/conexion.js";
-
-const collectionName = "transaccionesTest";
+import mongoose from "mongoose";
+import Transaction from "../schemas/transactionSchema.js";
 
 class transactionRepository {
   async create(transaction) {
-    const collection = dbClient.db.collection(collectionName);
-    transaction.id = (await collection.countDocuments()) + 1;
-    await collection.insertOne(transaction);
-    return transaction.id;
+    return await Transaction.create(transaction);
   }
 
   async getAll() {
-    const collection = dbClient.db.collection(collectionName);
-    return await collection.find({}).toArray();
+    return await Transaction.find();
   }
 
   async getOne(id) {
-    const collection = dbClient.db.collection(collectionName);
-    return await collection.findOne({ _id: new ObjectId(id) });
+    return await Transaction.findById(id);
   }
 
   async delete(id) {
-    const collection = dbClient.db.collection(collectionName);
-    return await collection.deleteOne({ _id: new ObjectId(id) });
+    return await Transaction.findOneAndDelete({
+      _id: new mongoose.Types.ObjectId(id),
+    });
   }
 
   async update(id, transaction) {
-    const collection = dbClient.db.collection(collectionName);
-
-    return await collection.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: transaction }
+    return await Transaction.findOneAndUpdate(
+      {
+        _id: new mongoose.Types.ObjectId(id),
+      },
+      transaction,
+      { new: true }
     );
   }
 }

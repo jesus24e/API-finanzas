@@ -1,27 +1,12 @@
-import { json } from "express";
 import transactionRepository from "../repositories/transactionRepository.js";
-import { Collection } from "mongodb";
 
 class TransactionController {
   constructor() {}
 
   async createTransaction(req, res) {
     try {
-      const defaults = {
-        tipo: "gasto",
-        monto: 0,
-        descripcion: "sin descripción",
-      };
-
-      const transaccion = { ...defaults, ...req.body };
-      const data = await transactionRepository.create(transaccion);
-
-      if (!data) {
-        res.status(404).send("error: " + error.message);
-      }
-
+      const data = await transactionRepository.create(req.body);
       res.status(201).json(data);
-      console.log("mesaje recibido en indice " + JSON.stringify(data));
     } catch (error) {
       res.status(500).send(error);
       console.log(error);
@@ -79,11 +64,11 @@ class TransactionController {
       const data = await transactionRepository.delete(id);
       if (!data) {
         return res.status(404).send("transaccion no encontrada.");
+      } else {
+        res.status(200).send("elemento eliminado");
       }
-      // res.status(200).send(`id ${id} eliminado`);
-      res.status(200);
     } catch (error) {
-      res.status(500).send(`error: ${error.message}`);
+      res.status(500).send(error);
       console.log(error);
     }
   }

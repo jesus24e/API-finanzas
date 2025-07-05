@@ -1,29 +1,28 @@
-import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
+import mongoose, { mongo } from "mongoose";
 
 dotenv.config();
 
 const dataBase = "pruebas";
 
-class dbClient{
-  
-  constructor(){
-    const mongoUri = process.env.MONGO_URI
-    this.client = new MongoClient(mongoUri); 
-    this.conectarDB();
+class dbClient {
+  constructor() {
+    this.conectDB();
   }
 
-  async conectarDB() {
+  async conectDB() {
+    const mongoUri = process.env.MONGO_URI;
+    await mongoose.connect(mongoUri);
+  }
+
+  async disconectDB() {
     try {
-      await this.client.connect();
-      this.db = this.client.db(dataBase);
-      console.log("✅ Conectado correctamente a la Base de Datos");
-    } 
-    
-    catch (error) {
-      console.error("❌ Error al conectar:", error.message);
-    } 
+      await mongoose.disconnect();
+      console.log("conexion a la base de datos cerrada.");
+    } catch (error) {
+      console.error("error al desconectar la base de datos: ", error);
+    }
   }
 }
 
-export default new dbClient;
+export default new dbClient();

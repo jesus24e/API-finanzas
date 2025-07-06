@@ -33,3 +33,8 @@ export default mongoose.model(
   transactionSchema,
   "transaccionesTest"
 );
+
+// export default mongoose.model(
+//   "transactions",
+//   transactionSchema
+// );

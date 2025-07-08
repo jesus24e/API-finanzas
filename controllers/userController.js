@@ -1,3 +1,4 @@
+import { generateToken } from "../helpers/authentication.js";
 import usersRepository from "../repositories/usersRepository.js";
 import bcrypt from "bcrypt";
 
@@ -44,7 +45,8 @@ class usuarioController {
       return res.status(400).json({error:"contraseña incorrecta"})
     }
 
-    return res.status(200).json({msg:"usuario autenticado"})
+    const token = generateToken(email)
+    return res.status(200).json({msg:"usuario autenticado",token})
   }
 }
 

@@ -5,7 +5,15 @@ class TransactionController {
 
   async createTransaction(req, res) {
     try {
-      const data = await transactionRepository.create(req.body);
+      const { tipo, monto, descripcion } = req.body;
+      const { email } = req.user;
+
+      const data = await transactionRepository.create({
+        tipo,
+        monto,
+        descripcion,
+        email
+      });
       res.status(201).json(data);
     } catch (error) {
       res.status(500).send(error);
@@ -15,7 +23,7 @@ class TransactionController {
 
   async readAllTransaction(req, res) {
     try {
-      const data = await transactionRepository.getAll();
+      const data = await transactionRepository.getAllByEmail(req.user.email);
       res.status(200).json(data);
     } catch (error) {
       res.status(500).send(error);

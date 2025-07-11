@@ -6,10 +6,16 @@ class transactionRepository {
     return await Transaction.create(transaction);
   }
 
-  async getAll() {
-    return await Transaction.find();
+  async getAllByEmail(email) {
+    
+    return await Transaction.find({email});
   }
 
+  async getAll() {
+    
+    return await Transaction.find();
+  }
+  
   async getOne(id) {
     return await Transaction.findById(id);
   }

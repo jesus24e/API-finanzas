@@ -1,18 +1,19 @@
 import express from 'express'
 import transactionController from '../controllers/transactionController.js';
+import { verifyToken } from '../helpers/authentication.js';
 
 const router = express.Router();
 
-router.get("/", transactionController.readAllTransaction)
+router.get("/", verifyToken, transactionController.readAllTransaction)
 
-router.post("/", transactionController.createTransaction)
+router.post("/", verifyToken,transactionController.createTransaction)
 
 
 router.route("/:id")
-    .put(transactionController.updateTransaction)
+    .put(verifyToken,transactionController.updateTransaction)
 
-    .delete(transactionController.deleteTransaction)
+    .delete(verifyToken,transactionController.deleteTransaction)
 
-    .get(transactionController.readTransaction);
+    .get(verifyToken,transactionController.readTransaction);
 
 export default router;

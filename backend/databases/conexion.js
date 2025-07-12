@@ -3,8 +3,6 @@ import mongoose, { mongo } from "mongoose";
 
 dotenv.config();
 
-const dataBase = "pruebas";
-
 class dbClient {
   constructor() {
     this.conectDB();

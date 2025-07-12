@@ -1,0 +1,39 @@
+  <!DOCTYPE html>
+  <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Transacciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  </head>
+  <body>
+
+    <div class="container-fluid p-4 bg-warning bg-gradient">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="text-white">Mis Transacciones</h2>
+        <button class="btn btn-outline-danger btn-lg" onclick="logout()">Cerrar sesión</button>
+      </div>    
+    </div>
+
+    <div class="container my-4">
+      <!-- Totales -->
+      <div class="row text-center mb-4">
+        <div class="col-md-6">
+          <div class="card-body" id="totalTransaccionesGasto"></div>
+        </div>
+        <div class="col-md-6">
+          <div id="totalTransaccionesIngreso"></div>
+        </div>
+      </div>
+
+      <div class="container align-items-center">
+        <div class="mb-4 text-end">
+          <a href="./newTransaction.html" class="btn btn-success bg-gradient align-items-end">+ Nueva Transacción</a>
+        </div>
+
+      <div id="listaTransacciones" class="row gy-3 "></div>
+    </div>
+    <script src="../config.js"></script>
+    <script src="./transaction.js"></script>
+
+  </body>
+  </html> 

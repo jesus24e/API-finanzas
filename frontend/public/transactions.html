@@ -5,32 +5,40 @@
     <title>Transacciones</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   </head>
-  <body>
+  <body class="bg-warning-subtle">
 
     <div class="container-fluid p-4 bg-warning bg-gradient">
       <div class="d-flex justify-content-between align-items-center mb-2">
-        <h2 class="text-white">Mis Transacciones</h2>
+        <h2 class="text-white fs-1">Mis Transacciones</h2>
         <button class="btn btn-outline-danger btn-lg" onclick="logout()">Cerrar sesión</button>
       </div>    
+      <div class="btn-group" id="secciones">
+        <a href="#" class="btn btn-light active" aria-current="page">personales</a>
+        <a href="#" class="btn btn-light">seccion 2</a>
+        <a href="#" class="btn btn-light">seccion 3</a>
+      </div>
     </div>
 
-    <div class="container my-4">
+    <div class="container-fluid my-4">
       <!-- Totales -->
       <div class="row text-center mb-4">
-        <div class="col-md-6">
+        <div class="col-md-4">
+          <div id="totalTransaccionesIngreso"></div>
+        </div>
+        <div class="col-md-4">
           <div class="card-body" id="totalTransaccionesGasto"></div>
         </div>
-        <div class="col-md-6">
-          <div id="totalTransaccionesIngreso"></div>
+        <div class="col-md-4">
+          <div class="card-body" id="restanteTotal"></div>
         </div>
       </div>
 
-      <div class="container align-items-center">
+      <div class="container-fluid align-items-center">
         <div class="mb-4 text-end">
           <a href="./newTransaction.html" class="btn btn-success bg-gradient align-items-end">+ Nueva Transacción</a>
         </div>
 
-      <div id="listaTransacciones" class="row gy-3 "></div>
+      <div id="listaTransacciones" class="row gy-3"></div>
     </div>
     <script src="../config.js"></script>
     <script src="./transaction.js"></script>

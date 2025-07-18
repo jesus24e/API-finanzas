@@ -12,9 +12,11 @@ async function cargarDatos() {
   if (!res.ok) return alert("Error al obtener transacción");
 
   const data = await res.json();
+  const fechaLocal = await formatearFecha(data.fecha)
   document.getElementById("tipo").value = data.tipo;
   document.getElementById("monto").value = data.monto;
   document.getElementById("descripcion").value = data.descripcion;
+  document.getElementById("fechaHora").value = fechaLocal;
 }
 
 async function actualizar(event) {
@@ -22,6 +24,7 @@ async function actualizar(event) {
   const tipo = document.getElementById("tipo").value;
   const monto = Number(document.getElementById("monto").value);
   const descripcion = document.getElementById("descripcion").value;
+  const fecha = document.getElementById("fechaHora").value;
 
   const res = await fetch(`${API_URL}/transactions/${id}`, {
     method: "PUT",
@@ -29,7 +32,7 @@ async function actualizar(event) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
     },
-    body: JSON.stringify({ tipo, monto, descripcion })
+    body: JSON.stringify({ tipo, monto, descripcion, fecha})
   });
 
   if (res.ok) {

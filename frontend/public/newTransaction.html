@@ -13,18 +13,22 @@
     <form onsubmit="guardar(event)">
       <div class="mb-3">
         <label for="tipo" class="form-label">Tipo</label>
-        <select id="tipo" class="form-control bg-light px-2 rounded">
+        <select id="tipo" class="form-control px-2 rounded">
           <option value="ingreso">Ingreso</option>
           <option value="gasto">Gasto</option>
         </select>
       </div>
       <div class="mb-3">
         <label for="monto" class="form-label">Monto</label>
-        <input type="number" id="monto" class="form-control bg-light px-2 rounded" required step="0.01"/>
+        <input type="number" id="monto" class="form-control px-2 rounded" required step="0.01"/>
       </div>
       <div class="mb-3">
         <label for="descripcion" class="form-label">Descripción</label>
-        <textarea type="text" class="form-control bg-tertiary bg-gradient px-2 rounded" id="descripcion" rows="3"></textarea>
+        <textarea type="text" class="form-control px-2 rounded" id="descripcion" rows="3"></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="fechaHora" class="form-label">fecha y hora</label>
+        <input type="datetime-local" id="fechaHora" name="fechaHora" class="form-control bg-tertiary bg-gradient px-2 rounded">
       </div>
       <div class="d-flex justify-content-between">
         <a href="transactions.html" class="btn btn-outline-secondary">Cancelar</a>

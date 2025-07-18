@@ -1,110 +1,108 @@
 const token = localStorage.getItem("token");
 if (!token) location.href = "login.html";
 
-async function cargarTransacciones() {
-  const res = await fetch(`${API_URL}/transactions`, {
+async function cargarTransacciones(seccion) {
+  
+  const res = await fetch(`${API_URL}/transactions`+`${seccion!=null?`?seccion=${seccion}`:``}`, {
+    method:"GET",
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) return alert("Error al cargar transacciones");
 
   const data = await res.json();
+  const containerTransacciones = document.getElementById("listaTransacciones");
+  containerTransacciones.innerHTML = "";
+  let montoIngreso=0;
+  let montoGasto=0;
+
   console.log(data)
-  const container = document.getElementById("listaTransacciones");
-  container.innerHTML = "";
 
   data.forEach(t => {
-    let fecha = new Date(t.updatedAt);
+    t.tipo=="ingreso" ? montoIngreso+=t.monto : montoGasto+=t.monto;//aprovechando el bucle se obtienen los ingresos y gastos totales
+
+    let fecha = new Date(t.fecha);
     let fechaStr = fecha.toLocaleDateString('es-MX', {timeZone: 'America/Mexico_City'});
     let horaStr = fecha.toLocaleTimeString('es-MX', {timeZone: 'America/Mexico_City', hour: '2-digit', minute: '2-digit', hour12: true});
-    const div = document.createElement("div");
-    div.className = "col-md-4";
+    const divTransacciones = document.createElement("div");
+    
+    //se crean las trajetas para cada transaccion
 
-    div.innerHTML = `
+    divTransacciones.className = "col-md-4";
+
+    divTransacciones.innerHTML = `
       <div class="card shadow-sm text-bg-light bg-gradient">
         <div class="card-body">
-          <h5 class="card-title text-capitalize text-${t.tipo == "gasto" ? "danger":"success"}">${t.tipo}</h5>
-          <p class="card-text"><strong>Monto:</strong> $${formatearConComas(t.monto.toFixed(2))}</p>
+          <h5 class="card-title text-capitalize text-${t.tipo == "gasto" ? "danger":"success"} text-end">${t.tipo}</h5>
           <p class="card-text">
             <strong>
               Descripción:
             </strong>
             ${t.descripcion}
           </p>
-          <p class="card-text">
+          <p class="card-text"><strong>Monto:</strong> $${formatearConComas(t.monto.toFixed(2))}</p>
+          <p class="card-text text-secondary">
             ${fechaStr} | ${horaStr}
           </p>
           <div class="d-flex justify-content-end gap-2">
-            <button class="btn btn-sm btn-outline-primary" onclick="editar('${t._id}')">Editar</button>
-            <button class="btn btn-sm btn-outline-danger" onclick="eliminar('${t._id}')">Eliminar</button>
+            <button class="btn btn-md btn-outline-danger" onclick="guardarIdTransaccion('${t._id}')" data-bs-toggle="modal" data-bs-target="#eliminarTransaccionModal">
+              <i class="bi bi-trash"></i>
+            </button>
+            <button class="btn btn-md btn-outline-primary" onclick="editar('${t._id}')">
+              <i class="bi bi-pencil-square"></i>
+            </button>
           </div>
         </div>
       </div>
     `;
-    container.appendChild(div);
+
+    containerTransacciones.appendChild(divTransacciones);
   });
-}
 
-async function obtenerTotal(tipoTransaccion){
-  const res = await fetch(`${API_URL}/transactions`, {
-    headers: { Authorization: `Bearer ${token}` },
+  //se crean los apartados para los montos y gastos totales
+
+  ["Ingreso","Gasto"].forEach(trs => {
+    const containerTipo = document.getElementById(`totalTransacciones${trs}`);
+    let total = trs === 'Ingreso' ? montoIngreso : montoGasto
+    containerTipo.innerHTML = "";
+    const divTipo = document.createElement("div");
+      divTipo.innerHTML = `
+            <h5 class="text-${trs === 'Ingreso' ? 'success' : 'danger'} fs-3 ">${trs}s totales</h5>
+            <p class = "fs-5"><strong>Monto:</strong> $${formatearConComas(total.toFixed(2))}</p>
+      `;
+    containerTipo.appendChild(divTipo)
   });
-  if (!res.ok) return alert("Error al cargar transacciones");
+  
+  //se crea el apartado del restante 
 
-  const data = await res.json();
-  const container = document.getElementById(`totalTransacciones${tipoTransaccion}`);
-
-  let total=0
-  for(const t of data){
-    if(t.tipo==tipoTransaccion.toLowerCase()){
-      total+=t.monto
-    }
-  }
-
-  container.innerHTML = "";
-  const div = document.createElement("div");
+  let restante = montoIngreso-montoGasto;
+  const containerRestante = document.getElementById(`restanteTotal`);
+  containerRestante.innerHTML = "";
+  const divRestante = document.createElement("div");
     
-    div.innerHTML = `
-          <h5 class="text-${tipoTransaccion === 'Ingreso' ? 'success' : 'danger'} fs-3">${tipoTransaccion}s totales</h5>
-          <p class = "fs-5"><strong>Monto:</strong> $${formatearConComas(total.toFixed(2))}</p>
-    `;
-    container.appendChild(div);
-}
-
-async function obtenerRestante() {
-    const res = await fetch(`${API_URL}/transactions`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!res.ok) return alert("Error al cargar transacciones");
-
-  const data = await res.json();
-  const container = document.getElementById(`restanteTotal`);
-
-  let totalGasto=0;
-  let totalIngreso=0;
-
-  for(const t of data){
-    if(t.tipo=="gasto"){
-      totalGasto+=t.monto
-    }
-    if(t.tipo=="ingreso"){
-      totalIngreso+=t.monto
-    }
-  }
-
-  let restante = totalIngreso-totalGasto;
-  console.log(restante)
-  container.innerHTML = "";
-  const div = document.createElement("div");
-    
-    div.innerHTML = `
+    divRestante.innerHTML = `
           <h5 class="text-primary fs-3">Restante total</h5>
           <p class="text-${restante < 0 ? "danger":"succes"} fs-5"><strong>Monto:</strong> $${formatearConComas(restante.toFixed(2))}</p>
     `;
-  container.appendChild(div);
+  containerRestante.appendChild(divRestante);
+}
+
+let idTransaccion = null;
+
+function guardarIdTransaccion(id){
+  idTransaccion=id;
+}
+
+async function eliminarTransaccionConfirmada() {
+  if (idTransaccion !== null) {
+    await eliminar(idTransaccion);
+    transaccionAEliminar = null;
+    const modal = bootstrap.Modal.getInstance(document.getElementById('eliminarTransaccionModal'));
+    modal.hide();
+  }
 }
 
 async function eliminar(id) {
-  if (!confirm("¿Estás seguro de eliminar esta transacción?")) return;
+  
   const res = await fetch(`${API_URL}/transactions/${id}`, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
@@ -126,15 +124,8 @@ function logout() {
   location.href = "../index.html";
 }
 
-function cargarDatosTransacciones(){
-  cargarTransacciones();
-  obtenerTotal("Gasto");
-  obtenerTotal("Ingreso");
-  obtenerRestante();
-}
-
 function formatearConComas(numero) {
   return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-cargarDatosTransacciones();      
+cargarTransacciones();

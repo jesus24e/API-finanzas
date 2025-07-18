@@ -6,9 +6,9 @@ class transactionRepository {
     return await Transaction.create(transaction);
   }
 
-  async getAllByEmail(email) {
+  async getAllTransactions(filter) {
     
-    return await Transaction.find({email});
+    return await Transaction.find(filter);
   }
 
   async getAll() {

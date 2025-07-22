@@ -26,7 +26,7 @@ En este repositorio se tiene el codigo fuente para un aplicacion web que tiene c
 
 el codigo se comopone por dos grandes apartados el frontend y el back end:
 
-```
+``
 📁 back-end/
 ├── 📁 controllers/         # Lógica que gestiona las peticiones y coordina la respuesta
 ├── 📁 databases/           # Configuración de conexión y acceso a la base de datos
@@ -43,7 +43,7 @@ el codigo se comopone por dos grandes apartados el frontend y el back end:
 │   └── 📄 ...              # Otros archivos HTML/JS utilizados en la interfaz
 ├── 📄 config.js            # Configuraciones como el puerto o URL de la API
 └── 📄 index.html           # Página inicial del frontend
-```
+``
 
 ---
 

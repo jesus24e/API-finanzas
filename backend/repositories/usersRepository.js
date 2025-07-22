@@ -10,12 +10,33 @@ class usersRepository {
     return await User.find();
   }
 
+  async getSections(filter) {
+    const userFiltered = await User.findOne(filter);
+    return userFiltered.Usecciones;
+  }
+
+  async addSection(email, section) {
+  return await User.findOneAndUpdate(
+    { email },
+    { $push: { Usecciones: section } },
+    { new: true }
+  );
+  }
+
+  async deleteSection(email, section) {
+    return await User.findOneAndUpdate(
+    { email },
+    { $pull: { Usecciones: section } },
+    { new: true }
+  );
+  }
+
   async getOneById(id) {
     return await User.findById(id);
   }
 
-  async getOne(filtro) {
-    return await User.findOne(filtro);
+  async getOne(filter) {
+    return await User.findOne(filter);
   }
 
   async delete(id) {

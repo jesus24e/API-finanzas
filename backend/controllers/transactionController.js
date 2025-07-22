@@ -5,7 +5,7 @@ class TransactionController {
 
   async createTransaction(req, res) {
     try {
-      const { tipo, monto, descripcion, fecha } = req.body;
+      const { tipo, monto, descripcion, fecha, seccion } = req.body;
       const { email } = req.user;
 
       const data = await transactionRepository.create({
@@ -14,6 +14,7 @@ class TransactionController {
         descripcion,
         email,
         fecha,
+        seccion,
       });
       res.status(201).json(data);
     } catch (error) {
@@ -24,8 +25,6 @@ class TransactionController {
 
   async readAllTransaction(req, res) {
     try {
-      // const data = await transactionRepository.getAllByEmail(req.user.email,req.query.monto);
-
       const filter = {email:req.user.email};
       if(req.query.seccion){
         filter.seccion= req.query.seccion

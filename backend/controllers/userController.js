@@ -48,6 +48,61 @@ class usuarioController {
     const token = generateToken(email)
     return res.status(200).json({msg:"usuario autenticado",token})
   }
+
+  async obtainSections(req,res){
+    try{
+      const { email } = req.user;
+      const secciones = await usersRepository.getSections({email})
+
+      res.status(200).json({secciones});
+    }catch(e){
+      console.log(e)
+      res.status(500).send(e)
+    }
+       
+  }
+
+  async addSection(req,res){
+    try {
+            
+      if (!req.body || Object.keys(req.body).length == 0) {
+        return res.status(204).send("body sin contenido");
+      }
+
+      const {email} = req.user;
+      const {seccion} =req.body;
+      const data = await usersRepository.addSection(email,seccion);
+
+      if(!data){
+       return res.status(400).send("usuario no encontrado.");
+      }
+      
+      res.status(200).json({ message: "Sección añadida correctamente"});
+    } catch (error) {
+      res.status(500).send(error)
+    }
+  }
+
+  async deleteSection(req,res){
+    try {
+            
+      if (!req.body || Object.keys(req.body).length == 0) {
+        return res.status(204).send("body sin contenido");
+      }
+
+      const {email} = req.user;
+      const {seccion} =req.body;
+      const data = await usersRepository.deleteSection(email,seccion);
+
+      if(!data){
+       return res.status(400).send("usuario no encontrado.");
+      }
+      
+      res.status(200).json({ message: "Sección eliminada correctamente"});
+    } catch (error) {
+      res.status(500).send(error)
+    }
+  }
 }
 
 export default new usuarioController();

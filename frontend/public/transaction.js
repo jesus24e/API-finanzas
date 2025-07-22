@@ -1,6 +1,20 @@
 const token = localStorage.getItem("token");
 if (!token) location.href = "login.html";
 
+let seccionActiva = null;
+const seccionLocal = localStorage.getItem("seccionActiva")
+
+if(seccionLocal != null){
+  seccionActiva = seccionLocal;
+}else{
+  seccionActiva = "Transacciones";
+}
+
+async function guardarSeccionSeleccionada(nuevaSeccionActiva) {
+  seccionActiva = nuevaSeccionActiva;
+  localStorage.setItem('seccionActiva', seccionActiva);
+}
+
 async function cargarTransacciones(seccion) {
   
   const res = await fetch(`${API_URL}/transactions`+`${seccion!=null?`?seccion=${seccion}`:``}`, {
@@ -9,13 +23,40 @@ async function cargarTransacciones(seccion) {
   });
   if (!res.ok) return alert("Error al cargar transacciones");
 
+  cargarMenu()
+
   const data = await res.json();
   const containerTransacciones = document.getElementById("listaTransacciones");
   containerTransacciones.innerHTML = "";
+  
   let montoIngreso=0;
   let montoGasto=0;
 
   console.log(data)
+
+  //se crean el apartado de las secciones
+
+  const botonAgregarSeccion = document.getElementById("btn-agregar-seccion")
+  const containerSecciones = document.getElementById("secciones")
+  const menu = document.getElementById("menuTransacciones");
+  containerSecciones.innerHTML = "";
+  const secciones = await obtenerSeccionesUsuario()
+
+  
+  containerSecciones.appendChild(menu);  
+
+  secciones.forEach(seccion =>{
+    const aSeccion = document.createElement("a");
+    aSeccion.className = `${seccion==seccionActiva?"btn btn-dark flex-grow-1 flex-md-grow-0 text-center active disabled":"btn btn-light flex-grow-1 flex-md-grow-0 text-center"}`
+    aSeccion.onclick = () =>{ guardarSeccionSeleccionada(seccion), cargarTransacciones(seccion) }
+    aSeccion.innerHTML = seccion
+    containerSecciones.appendChild(aSeccion);
+  })
+
+  
+  containerSecciones.appendChild(botonAgregarSeccion);
+
+  
 
   data.forEach(t => {
     t.tipo=="ingreso" ? montoIngreso+=t.monto : montoGasto+=t.monto;//aprovechando el bucle se obtienen los ingresos y gastos totales
@@ -120,12 +161,112 @@ function editar(id) {
 }
 
 function logout() {
-  localStorage.removeItem("token");
+  localStorage.clear()
   location.href = "../index.html";
 }
 
 function formatearConComas(numero) {
   return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+async function obtenerSeccionesUsuario(){
+  const res = await fetch(`${API_URL}/users/sections`, {
+    method:"GET",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return alert("Error al cargar secciones");
+
+  const data = await res.json();
+
+  return data.secciones;
+}
+
+async function agregarSeccion() {
+  const seccionNueva = document.getElementById("nombreNuevaSeccion").value
+  const res = await fetch(`${API_URL}/users/addSection`, {
+    method: "PUT",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ seccion: seccionNueva })
+  });
+
+  if (!res.ok) {
+    alert("Error al agregar seccion");
+    return null;
+  }
+
+  const data = await res.json();
+  console.log(data);
+  const modal = bootstrap.Modal.getInstance(document.getElementById('agregarSeccionModal'));
+  modal.hide();
+
+  cargarTransacciones();
+}
+
+async function eliminarSeccion(seccion) {
+  const seccionParaEliminar = seccion
+  const seccionesActuales = await obtenerSeccionesUsuario();
+  if (seccionParaEliminar == seccionesActuales[0]){
+    alert("Error, no se puede eliminar la seccion predeterminada");
+    return null;
+  }
+
+  const res = await fetch(`${API_URL}/users/deleteSection`, {
+    method: "PUT",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ seccion: seccionParaEliminar })
+  });
+
+  if (!res.ok) {
+    alert("Error al eliminar seccion");
+    return null;
+  }
+
+  const data = await res.json();
+  console.log(data);
+
+  cargarTransacciones();
+}
+
+async function seccionNuevaTransaccion() {
+  localStorage.setItem('seccionActiva', seccionActiva); 
+}
+
+async function cargarMenu() {
+  const secciones= await obtenerSeccionesUsuario()
+
+  const menuSecciones = document.getElementById("collapseseccionesbody")
+  menuSecciones.innerHTML="";
+
+  secciones.forEach(seccion =>{
+
+    const divSeccion = document.createElement("div");
+    divSeccion.className="m-1"
+    let actionbutton = null
+    if (seccion != secciones[0]){
+      actionbutton = `<button type="button" class="btn btn-danger" onclick="eliminarSeccion('${seccion}')">eliminar</button>`
+    }else{
+      actionbutton = ""
+    }
+    divSeccion.innerHTML = `
+      <a class="btn btn-dark d-flex" data-bs-toggle="collapse" href="#collapse${seccion}" role="button" aria-expanded="false" aria-controls="collapse${seccion}">
+        ${seccion}
+      </a>
+      <div class="collapse" id="collapse${seccion}">
+        <div class="card card-body text-bg-dark" id="collapse${seccion}body">
+          ${actionbutton}
+        </div>
+      </div>
+    `
+    menuSecciones.appendChild(divSeccion);
+  })
+
+  
 }
 
 cargarTransacciones();

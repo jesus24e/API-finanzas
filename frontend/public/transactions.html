@@ -9,29 +9,91 @@
 </head>
 <body class="bg-warning-subtle d-flex flex-column min-vh-100">
 
-    <!-- Header -->
+<!-- Header -->
     <div class="d-flex flex-column container-fluid p-4 bg-warning bg-gradient">
-      <h2 class="text-white display-5 fw-bold my-3">Mis Transacciones</h2>
+      <div class="d-flex">
+        
+        <h2 class="text-white display-5 fw-bold my-3">Mis Transacciones</h2>
+      </div>
       
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
-            
-        <!-- <div class="btn-group d-flex flex-wrap" id="secciones" role="group" aria-label="Secciones">
-          <a href="#" class="btn btn-light flex-grow-1 flex-md-grow-0 text-center" aria-current="page" onclick="cargarTransacciones()"">todos</a>
-          <a href="#" class="btn btn-light flex-grow-1 flex-md-grow-0 text-center" onclick="cargarTransacciones('personal')">personal</a>
-          <a href="#" class="btn btn-light flex-grow-1 flex-md-grow-0 text-center">3</a>
-        </div> -->
-
         <div class="btn-group d-flex flex-wrap" id="secciones" role="group" aria-label="Secciones">
-          <a href="#" class="btn btn-light flex-grow-1 flex-md-grow-0 text-center" aria-current="page" ">todos</a>
-          <a href="#" class="btn btn-light flex-grow-1 flex-md-grow-0 text-center" >personal</a>
-          <a href="#" class="btn btn-light flex-grow-1 flex-md-grow-0 text-center">tarjetas</a>
+
+          <button class="btn btn-light flex-grow-1 flex-md-grow-0 text-center" id="menuTransacciones" type="
+          button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasmenu">
+            <i class="bi bi-list"></i>
+          </button>
+          
+          <button class="btn btn-light" id="btn-agregar-seccion" type="button" title="añadir seccion"  data-bs-toggle="modal" data-bs-target="#agregarSeccionModal">
+            <i class="bi bi-plus-circle"></i>
+          </button>
+
+        </div>
+        <div  class="offcanvas offcanvas-start p-2 text-bg-dark" tabindex="-1" id="offcanvasmenu">
+<!--offcanvas menu-->
+          <div class="offcanvas-header border-bottom"  data-bs-theme="dark">
+            <h5 class="offcanvas-title display-5 fw-bold" id="offcanvasExampleLabel">Menu</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body" id="offcanvasmenubody">
+            <ul class="list-unstyled ps-0" id="offcanvasmenusecciones">
+              <li class="border-bottom">
+
+                <a class="btn btn-dark m-1 fs-4 fw-semibold" data-bs-toggle="collapse" href="#collapseSecciones" role="button" aria-expanded="false" aria-controls="collapseSecciones">
+                  Secciones
+                </a>
+                <div class="collapse" id="collapseSecciones">
+                  <div class="card card-body text-bg-dark" id="collapseseccionesbody">
+                    
+                  </div>
+                </div>
+
+              </li>
+
+              <li class="border-bottom">
+
+                <a class="btn btn-dark m-1 fs-4 fw-semibold" data-bs-toggle="collapse" href="#collapseTransacciones" role="button" aria-expanded="false" aria-controls="collapseTransacciones">
+                  Transacciones
+                </a>
+
+                <div class="collapse" id="collapseTransacciones">
+                  <div class="card card-body text-bg-dark" id="collapsetransaccionesbody">
+                    
+                  </div>
+                </div>
+
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+<!--modal para nombre de una nueva seccion-->
+        <div class="modal fade" id="agregarSeccionModal" tabindex="-1" aria-labelledby="tituloModal" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <h5 class="modal-title" id="tituloModal">Nueva Seccion</h5>
+              </div>
+
+              <div class="modal-body">
+                <input id="nombreNuevaSeccion" type="text" placeholder="nombre" class="form-control form-control-lg rounded-pill px-4 py-3 shadow-sm" />
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="agregarSeccion()">crear</button>
+              </div>
+
+            </div>
+          </div>
         </div>
 
         <button class="btn btn-light btn-lg me-2" title="cerrar sesión" data-bs-toggle="modal" data-bs-target="#cerrarSesionModal">
           <i class="bi bi-box-arrow-right"></i>
         </button>
 
-        <!-- Modal -->
+<!-- Modal cerrar sesion-->
         <div class="modal fade" id="cerrarSesionModal" tabindex="-1" aria-labelledby="tituloModal" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -57,7 +119,7 @@
       </div>
     </div>
 
-    <!-- Totales -->
+<!-- Totales -->
     <div class="container my-4">
       <div class="row text-center gy-3">
         <div class="col-12 col-md-4">
@@ -71,12 +133,12 @@
         </div>
       </div>
 
-      <!-- Botón nueva transacción -->
+<!-- Botón nueva transacción -->
       <div class="d-flex justify-content-end my-4">
-        <a href="./newTransaction.html" class="btn btn-success bg-gradient px-4 py-2">+ Nueva Transacción</a>
+        <a href="./newTransaction.html" class="btn btn-success bg-gradient px-4 py-2" onclick="seccionNuevaTransaccion()">+ Nueva Transacción</a>
       </div>
 
-      <!-- Lista transacciones -->
+<!-- Lista transacciones -->
       <div id="listaTransacciones" class="row gy-3"></div>
 
       <div class="modal fade" id="eliminarTransaccionModal" tabindex="-1" aria-labelledby="tituloModal" aria-hidden="true">

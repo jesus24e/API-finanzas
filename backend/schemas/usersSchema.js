@@ -18,7 +18,13 @@ const usersSchema = new mongoose.Schema(
         clave:{
             type:String,
             required: true
-        }
+        },
+
+        Usecciones: {
+            type: [String],
+            requred:true,
+            default:["Transacciones"]
+        },
         
     }
 );

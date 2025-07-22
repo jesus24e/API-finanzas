@@ -7,6 +7,7 @@ async function guardar(event) {
   const monto = Number(document.getElementById("monto").value);
   const descripcion = document.getElementById("descripcion").value;
   const fecha = new Date(document.getElementById("fechaHora").value);
+  const seccion = localStorage.getItem("seccionActiva");
   console.log(fecha)
   const res = await fetch(`${API_URL}/transactions`, {
     method: "POST",
@@ -14,7 +15,7 @@ async function guardar(event) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
     },
-    body: JSON.stringify({ tipo, monto, descripcion, fecha})
+    body: JSON.stringify({ tipo, monto, descripcion, fecha, seccion})
     
   });
   

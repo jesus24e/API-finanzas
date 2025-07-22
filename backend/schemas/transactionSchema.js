@@ -28,6 +28,12 @@ const transactionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
+    seccion: {
+      type: String,
+      required: true,
+      default: "Transacciones",
+    }
   },
   { timestamps: true }
 );
